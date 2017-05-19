@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from collections import OrderedDict
 import requests
 from api_url import GitHubEndPoint as EndPoint
@@ -152,16 +153,29 @@ def request_user_email(user_id, github_api_auth):
 
     return ge
 
-
-def format_email(ges):
+def format_email(ges, output_format='default'):
     """
     John (john2) <John@example.org>; Peter James (pjames) <James@example.org>
     """
     formatted_email = []
+
+    if output_format == 'csv':
+        formatted_email.append(','.join(['Name', 'Username', 'Email', 'From']))
+
     for ge in ges:
         if ge.email:
             try:
-                formatted_email.append('{} ({}) <{}> [{}]'.format(ge.name.encode('utf8'), ge.g_id, ge.email, ge.from_profile))
+                if not output_format or output_format == 'default':
+                    formatted_email.append('{} ({}) <{}>'.format(ge.name.encode('utf8'), ge.g_id, ge.email))
+                elif output_format == 'with_source':
+                    formatted_email.append('{} ({}) <{}> [{}]'.format(ge.name.encode('utf8'), ge.g_id, ge.email, ge.from_profile))
+                elif output_format == 'csv':
+                    formatted_email.append('{},{},{},{}'.format(
+                        ge.name.encode('utf8'),
+                        ge.g_id,
+                        ge.email,
+                        'Profile' if ge.from_profile else 'Commit'
+                    ))
             except UnicodeEncodeError:
                 print ge.g_id, ge.email, ge.from_profile
                 continue
@@ -199,5 +213,5 @@ def repository(user_id, repo, github_api_auth):
 if __name__ == '__main__':
     # print request_user_email('yuecen')
     ges = collect_email_info('yuecen', 'github-email-explorer', ['star'])
-    print 'Total: {}/{}'.format(len([ge for ge in ges if ge.email]), len(ges))
+    print >> sys.stderr, 'Total: {}/{}'.format(len([ge for ge in ges if ge.email]), len(ges))
     print format_email(ges)

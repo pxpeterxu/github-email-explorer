@@ -20,6 +20,7 @@ class ExploreCliArgs(object):
         p.add_argument('--access_token', help='Github OAuth access token (see https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)', required=True)
 
         p.add_argument('--status', action='store_true', help='Github API status')
+        p.add_argument('--output_format', choices=['default', 'csv', 'with-source'], help='Format of the output')
 
         args = p.parse_args()
 
@@ -34,6 +35,7 @@ class ExploreCliArgs(object):
         self.access_token = args.access_token if args.access_token else ''
 
         self.status = args.status
+        self.output_format = args.output_format
 
 
 def get_github_email_by_repo():
@@ -57,7 +59,7 @@ def get_github_email_by_repo():
     # handle action_type
     ges = github_email.collect_email_info(explore_cli_args.repo.owner, explore_cli_args.repo.name, explore_cli_args.action_type, github_api_auth)
     print 'Total: {}/{}'.format(len([ge for ge in ges if ge.email]), len(ges))
-    print github_email.format_email(ges)
+    print github_email.format_email(ges, explore_cli_args.output_format)
 
 
 if __name__ == '__main__':
