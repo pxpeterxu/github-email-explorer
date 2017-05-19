@@ -15,10 +15,10 @@ def record_args(name, d):
 class ExploreCliArgs(object):
     def __init__(self):
         p = argparse.ArgumentParser(prog='ge-explore')
-        p.add_argument('--repo', help='Repo on Github, type "<owner>/<repo>"')
+        p.add_argument('--repo', help='Repo on Github, type "<owner>/<repo>"', required=True)
         p.add_argument('--action_type', default=['star'], nargs='+', help='"star", "fork" and "watch" are the only three options now')
-        p.add_argument('--client_id', help='Github OAuth client ID')
-        p.add_argument('--client_secret', help='Github OAuth client secret')
+        p.add_argument('--access_token', help='Github OAuth access token (see https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)', required=True)
+
         p.add_argument('--status', action='store_true', help='Github API status')
 
         args = p.parse_args()
@@ -31,8 +31,8 @@ class ExploreCliArgs(object):
             self.repo = record_args('repo', {'owner': tmp[0], 'name': tmp[1]})
 
         self.action_type = args.action_type
-        self.client_id = args.client_id if args.client_id else ''
-        self.client_secret = args.client_secret if args.client_secret else ''
+        self.access_token = args.access_token if args.access_token else ''
+
         self.status = args.status
 
 
@@ -41,7 +41,9 @@ def get_github_email_by_repo():
     """
     explore_cli_args = ExploreCliArgs()
 
-    github_api_auth = (explore_cli_args.client_id, explore_cli_args.client_secret)
+    github_api_auth = {
+        'access_token': explore_cli_args.access_token
+    }
 
     if explore_cli_args.status:
         # call api status

@@ -14,17 +14,14 @@ class SendGridCliArgs(object):
         p.add_argument('--api_key', help='Your KEY of SendGrid API')
         p.add_argument('--template_path', help='Your email template')
         p.add_argument('--action_type', default=['star'], nargs='+', help='"star", "fork" and "watch" are the only three options now')
-        p.add_argument('--client_id', help='Github OAuth client ID')
-        p.add_argument('--client_secret', help='Github OAuth client secret')
+        p.add_argument('--access_token', help='Github OAuth access token (see https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)', required=True)
 
         args = p.parse_args()
 
         self.api_key = args.api_key
         self.action_type = args.action_type
         self.template_path = args.template_path
-        self.client_id = args.client_id if args.client_id else ''
-        self.client_secret = args.client_secret if args.client_secret else ''
-
+        self.access_token = args.access_token if args.access_token else ''
 
 def send_email_by_sendgrid():
     """

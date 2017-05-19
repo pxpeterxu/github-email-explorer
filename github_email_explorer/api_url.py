@@ -37,9 +37,10 @@ class GitHubEndPoint(object):
     @staticmethod
     def add_auth_info(url, github_api_auth):
         if github_api_auth is None:
-            github_api_auth = ('', '')
-        url = set_url_parameter(url, 'client_id', github_api_auth[0])
-        url = set_url_parameter(url, 'client_secret', github_api_auth[1])
+            github_api_auth = {}
+
+        for key, value in github_api_auth.iteritems():
+            url = set_url_parameter(url, key, value)
         return url
 
     @staticmethod

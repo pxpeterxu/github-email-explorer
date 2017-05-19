@@ -149,7 +149,7 @@ def request_user_email(user_id, github_api_auth):
         if email is not None:
             ge.email = email
             ge.from_profile = False
-        
+
     return ge
 
 

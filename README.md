@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/yuecen/github-email-explorer.svg?branch=master)](https://travis-ci.org/yuecen/github-email-explorer)
 [![Code Climate](https://codeclimate.com/github/yuecen/github-email-explorer/badges/gpa.svg)](https://codeclimate.com/github/yuecen/github-email-explorer)
 
-For people who want to create an email marketing plan for particular group on 
-GitHub, github-email-explorer can collect addresses from a repository you want, 
+For people who want to create an email marketing plan for particular group on
+GitHub, github-email-explorer can collect addresses from a repository you want,
 and then send email content to those email addresses.
 
 ### Installation
@@ -25,18 +25,16 @@ SendGrid is only one email provider at current progress.
 #### A. Using Command
 
 ```bash
-$ ge-explore --repo yuecen/github-email-explorer --action_type star fork watch
- 
+$ ge-explore --repo yuecen/github-email-explorer --access_token 185d73ee6c8718cfb98544e70bde3f4dfa10357a --action_type star fork watch
+
 John (john2) <John@example.org>; Peter James (pjames) <James@example.org>;
 ```
 
-You can get user email by ```ge-explore``` with ```<owner>/<repo>```. The email 
-addresses are responded in a formatted string. You can copy contact list to any 
+You can get user email by ```ge-explore``` with ```<owner>/<repo>```. The email
+addresses are responded in a formatted string. You can copy contact list to any
 email service you have, then send your email with those contact address.
 
-(If you encounter the situation of limitation from GitHub server during running 
-the command, please add ```--client_id <your_github_auth_id> --client_secret <your_github_auth_secret>``` 
-with the command above. Get *Client ID* and *Client Secret* by [OAuth applications].)
+You need an `access_token` from Github in order to view publicly-available emails. As a result, **before using github-email-explorer, [generate a Personal Access Token] on Github first.
 
 #### B. Using Python Script
 
@@ -49,7 +47,7 @@ for ge in ges:
     print ge.g_id, "->", ge.name, ",", ge.email
 
 # With Authentication
-# github_api_auth = ('<your_client_id>', '<your_client_secret>')
+# github_api_auth = { 'access_token': '<your access token>' }
 # ges = github_email.collect_email_info('yuecen', 'github-email-explorer', ['star', 'watch'],
 #                                        github_api_auth=github_api_auth)
 ```
@@ -67,7 +65,7 @@ You can find get_email.py in *examples* folder.
 
 #### 1. Write Email Content with Template Format
 
-The [Jinja2] is used to render email content in github-email-explorer, basic 
+The [Jinja2] is used to render email content in github-email-explorer, basic
 [expressions] make email content more flexible for personal information.
 
 Here is an example to use following syntax, the file saved to ```examples/marketing_email.txt```
@@ -106,11 +104,11 @@ You can use syntax ```{{ ... }}``` to substitute metadata field in runtime stage
 
 #### 2. Send Email
 
-In order to send email to many users flexibly, we combine the email list from 
+In order to send email to many users flexibly, we combine the email list from
 result of ge-explore and SendGrid to approach it.
 
 ```
-ge-sendgrid --api_key <your_sendgrid_api_key> 
+ge-sendgrid --api_key <your_sendgrid_api_key>
             --template_path <github-email-explorer_folder_path>/examples/marketing_email.txt
 ```
 
@@ -120,7 +118,7 @@ The following image is an real example of email format for ge-sendgrid command.
 
 ### More...
 
-In order to understand API [rate limit] you are using, the status information 
+In order to understand API [rate limit] you are using, the status information
 can be found by github-email-explorer command.
 
 Without authentication
@@ -150,6 +148,6 @@ Search                30           30  2016-07-06T07:00:47Z
 
 
 [rate limit]:https://developer.github.com/v3/rate_limit/
-[OAuth applications]:https://github.com/settings/developers
+[generate a Personal access token]:https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
 [Jinja2]:http://jinja.pocoo.org/
 [expressions]:http://jinja.pocoo.org/docs/dev/templates/#expressions
